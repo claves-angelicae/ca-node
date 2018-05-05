@@ -17,6 +17,7 @@ web3.fromWei(web3.eth.getBalance(web3.eth.accounts[0])).toNumber()
 var acct1 = web3.eth.accounts[0];
 var acct2 = web3.eth.accounts[1];
 var acct3 = web3.eth.accounts[2];
+var acct3 = web3.eth.accounts[4];
 
 var balance = (acct) => {
 	return web3.fromWei( web3.eth.getBalance(acct), 'ether').toNumber()
