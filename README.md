@@ -35,4 +35,5 @@ The compiled .abi and .bin files are generated in `./build/`.
   - https://github.com/OpenZeppelin/zeppelin-solidity/blob/master/contracts/payment/PullPayment.sol
   - https://github.com/TokenMarketNet/ethereum-smart-contract-transaction-demo/tree/master/src
   - https://tokenmarket.net/blog/creating-ethereum-smart-contract-transactions-in-client-side-javascript/
+  - https://www.ethereum.org/greeter
 

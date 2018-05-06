@@ -40,6 +40,8 @@ let bin = fs.readFileSync(_contractBIN)
 // Create Contract proxy class
 let ElementContract = new web3.eth.Contract(abi);
 
+process.exit();
+
 console.log("Deploying the contract");
 
 ElementContract.deploy({
@@ -48,8 +50,8 @@ ElementContract.deploy({
 })
 .send({
   from: _contractOwner,
-  gas: 1500000,
-  gasPrice: '30000000000000'
+  gas: 300000,
+  gasPrice: '2000000000' // 2 gwei (1B wei)
 }, function(error, transactionHash) {
   if (error) {
     console.log(error);
