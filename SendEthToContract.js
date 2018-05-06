@@ -4,6 +4,7 @@ var config = require('./config').config;
 
 if (!process.argv[4]) {
 	console.log("Usage: ./SendEthToContract.js <contract address> <from address> <eth amt>");
+	process.exit();
 }
 
 let contractAddr = process.argv[2];
@@ -21,6 +22,7 @@ var web3 = new Web3(new Web3.providers.HttpProvider(netAddr));
 console.log("sending\t\t", chalk.green(amt + " ether"));
 
 web3.eth.getBalance(contractAddr, function(err, balance) {
+	
 	console.log("contract balance before");
  	console.log(web3.utils.fromWei(balance, "ether") + " ether");
 

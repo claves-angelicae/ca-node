@@ -8,7 +8,7 @@ does the following:
   - Interacts with Contracts
   - Casts values to contracts from CA Installation
 
-## Compiling Contracts
+## Compile Contract
 
 Contracts are located in `./contracts`. To compile a contract, run
 
@@ -16,10 +16,13 @@ Contracts are located in `./contracts`. To compile a contract, run
 
 The compiled .abi and .bin files are generated in `./build/`.
 
-## Deploying Contracts
+## Deploy Contract
 
-    ./contracts/deploy.js <contract owner 0xfff....> <contract.bin> <contract.abi>
+    ./contracts/deploy.js <contract owner address> <contract.bin> <contract.abi>
 
+## Cast LOGOS to contract
+
+    ./CastToContract.js <sender address> <contract address> <contract.abi> "logos string"
 
 ## Reference
 

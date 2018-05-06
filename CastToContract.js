@@ -25,10 +25,12 @@ let abi = JSON.parse(fs.readFileSync(_contractABIFile));
 // create contract instance
 const ElementContract = new web3.eth.Contract(abi, _contractAddress);
 
+// call the contract and see what the current logos string is
 ElementContract.methods.logos().call(function(error, result) {
   
   console.log("Current LOGOS is:", chalk.green(result));
 
+  // cast new logos string
   ElementContract.methods.cast(_logosStr).send({ 
     "from": _senderAddress 
   }, function(error, result) {
@@ -36,10 +38,10 @@ ElementContract.methods.logos().call(function(error, result) {
     console.log("Setting new LOGOS string to", chalk.green(_logosStr));
     console.log("tx", chalk.yellow(result));
 
+    // check what the new string is
     ElementContract.methods.logos().call(function(error, result) {
       console.log("LOGOS is now:", chalk.green(result));      
     });
 
-  });
-  
+  });  
 });
