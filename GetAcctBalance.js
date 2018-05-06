@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var config = require('./config').get();
+var config = require('./config').config;
 
 if (!process.argv[2]) {
   console.log("Usage: ./GetAcctBalance.js <address>");

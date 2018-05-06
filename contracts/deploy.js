@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var config = require('./../config').get();
+var config = require('./config').config;
 
 if (!process.argv[6]) {
   console.log("Usage: ./deploy.sh <contract.abi> <contract.bin> <owner address> <destination address> <element string>");

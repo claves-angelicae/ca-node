@@ -1,7 +1,5 @@
 module.exports = {
-  get: function() {
-    return {
-      ethNode : 'http://localhost:8545'
-    }
+  config: {
+      ethNode : 'http://localhost:8545' 
   }
 };
