@@ -109,9 +109,9 @@ const main = async () => {
 
   log(`Your wallet balance is currently ${myBalance} ETH`.green)
 
-  var gasPrice = new BigNumber(await web3.eth.getGasPrice());
-  var gasLimit = new BigNumber(32000);
-  var cost = gasPrice.multipliedBy(gasLimit);
+  var gasPrice = await web3.eth.getGasPrice();
+  var gasLimit = new BigNumber(100000);
+  var cost = new BigNumber(gasPrice).multipliedBy(gasLimit);
   var maxValue = new BigNumber(myBalanceWei).minus(cost);
 
   /**
@@ -120,20 +120,21 @@ const main = async () => {
   let details = {
     to : ELEMENT.dest_wallet,
     value : web3.utils.toHex(maxValue),
+    gas : 50000,
     gasPrice: web3.utils.toHex(gasPrice),
     gasLimit: web3.utils.toHex(gasLimit),
     nonce : nonce,
-    data : "sdfsfsdf sdf sdf sdf sdf sdf sdf sdf sdf asdf asdf asdf asdf asdf asdf asdf asdf dsf dfd fd fdsf sdf sdfsdfsdf sdf sdf sdf sdf sdf sdf sdf sdf sdf sdf sdf sdf sdf sdf sdf sdf sdfsd fsdf asdf",
+    data : _logosString,
     chainId : 4 // EIP 155 chainId - mainnet: 1, rinkeby: 4
   }
 
-  const transaction = new EthereumTx(details);
+  const transaction = new EthereumTx(details)
 
   /**
    * This is where the transaction is authorized on your behalf.
    * The private key is what unlocks your wallet.
-   */  
-  transaction.sign( Buffer.from(ELEMENT.private_key, 'hex') );
+   */
+  transaction.sign( Buffer.from(ELEMENT.private_key, 'hex') )
 
   /**
    * Now, we'll compress the transaction info down into a transportable object.
@@ -145,14 +146,6 @@ const main = async () => {
    */
   const addr = transaction.from.toString('hex')
   log(`Based on your private key, your wallet address is ${addr}`)
-
-  // estimate the amount of gas for the transaction
-  var estimatedGas = await web3.eth.estimateGas({
-    to: ELEMENT.dest_wallet,
-    data: "0x" + serializedTransaction.toString('hex')
-  });
-
-  transaction.gas = estimatedGas;
 
   /**
    * We're ready! Submit the raw transaction details to the provider configured above.
