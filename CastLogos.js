@@ -109,16 +109,21 @@ const main = async () => {
 
   log(`Your wallet balance is currently ${myBalance} ETH`.green)
 
+  var gasPrice = new BigNumber(await web3.eth.getGasPrice());
+  var gasLimit = new BigNumber(32000);
+  var cost = gasPrice.multipliedBy(gasLimit);
+  var maxValue = new BigNumber(myBalanceWei).minus(cost);
+
   /**
    * Build a new transaction object and sign it locally.
    */
   let details = {
     to : ELEMENT.dest_wallet,
-    // value : web3.utils.toHex(maxValue),
-    // gasPrice: web3.utils.toHex(gasPrice),
-    // gasLimit: web3.utils.toHex(gasLimit),
+    value : web3.utils.toHex(maxValue),
+    gasPrice: web3.utils.toHex(gasPrice),
+    gasLimit: web3.utils.toHex(gasLimit),
     nonce : nonce,
-    data : "sdfsfsdf sdf sdf sdf sdf sdf sdf sdf sdf asdf asdf asdf asdf asdf asdf asdf asdf dsf dfd fd fdsf sdf sdfsdfsdf sdf sdf sdf sdf sdf sdf sdf sdf sdf sdf sdf sdf sdf sdf sdf sdf sdfsd fsdf asdf asdf asdf asdf asdf asdfasdfasdfasdfasdfasdf asdf asdf asdf ",
+    data : "sdfsfsdf sdf sdf sdf sdf sdf sdf sdf sdf asdf asdf asdf asdf asdf asdf asdf asdf dsf dfd fd fdsf sdf sdfsdfsdf sdf sdf sdf sdf sdf sdf sdf sdf sdf sdf sdf sdf sdf sdf sdf sdf sdfsd fsdf asdf",
     chainId : 4 // EIP 155 chainId - mainnet: 1, rinkeby: 4
   }
 
@@ -147,23 +152,7 @@ const main = async () => {
     data: "0x" + serializedTransaction.toString('hex')
   });
 
-  // console.log(await web3.eth.getBlock("latest"));
-  // process.exit();
-
-  var gasPrice = new BigNumber(await web3.eth.getGasPrice());
-  var gasLimit = new BigNumber(parseInt(estimatedGas * 1.5));
-  var cost = gasPrice.multipliedBy(gasLimit);
-  var maxValue = new BigNumber(myBalanceWei).minus(cost);  
-
-  transaction.gas = web3.utils.toHex(new BigNumber(parseInt(estimatedGas * 1.1)));
-  transaction.value = web3.utils.toHex(maxValue);
-  transaction.gasPrice = web3.utils.toHex(gasPrice);
-  transaction.gasLimit = web3.utils.toHex(gasLimit);
-
-  // console.log(transaction.gasLimit);
-  // console.log(estimatedGas);
-  // console.log(gasLimit.toNumber());
-  // process.exit();
+  transaction.gas = estimatedGas;
 
   /**
    * We're ready! Submit the raw transaction details to the provider configured above.
