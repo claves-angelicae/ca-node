@@ -40,8 +40,6 @@ let bin = fs.readFileSync(_contractBIN)
 // Create Contract proxy class
 let ElementContract = new web3.eth.Contract(abi);
 
-process.exit();
-
 console.log("Deploying the contract");
 
 ElementContract.deploy({
