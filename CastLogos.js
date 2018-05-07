@@ -94,33 +94,26 @@ web3.eth.defaultAccount = ELEMENT.wallet;
 // This is the process that will run when you execute the program.
 const main = async () => {
 
-  /**
-   * With every new transaction you send using a specific wallet address,
-   * you need to increase a nonce which is tied to the sender wallet.
-   */
+  // With every new transaction you send using a specific wallet address,
+  // you need to increase a nonce which is tied to the sender wallet.
   let nonce = await web3.eth.getTransactionCount(web3.eth.defaultAccount)
   log(`The outgoing transaction count for your wallet address is: ${nonce}`.magenta)
 
-  /**
-   * Fetch your personal wallet's balance
-   */
+  // get wallet balance
   let myBalanceWei = await web3.eth.getBalance(web3.eth.defaultAccount)
   let myBalance = web3.utils.fromWei(myBalanceWei, 'ether')
 
-  log(`Your wallet balance is currently ${myBalance} ETH`.green)
+  log(`Wallet balance is currently ${myBalance} ETH`.green)
 
   var gasPrice = await web3.eth.getGasPrice();
-  var gasLimit = new BigNumber(100000);
+  var gasLimit = new BigNumber(40000);
   var cost = new BigNumber(gasPrice).multipliedBy(gasLimit);
   var maxValue = new BigNumber(myBalanceWei).minus(cost);
 
-  /**
-   * Build a new transaction object and sign it locally.
-   */
+  // Build a new transaction object and sign it locally.
   let details = {
     to : ELEMENT.dest_wallet,
     value : web3.utils.toHex(maxValue),
-    gas : 50000,
     gasPrice: web3.utils.toHex(gasPrice),
     gasLimit: web3.utils.toHex(gasLimit),
     nonce : nonce,
@@ -128,22 +121,28 @@ const main = async () => {
     chainId : 4 // EIP 155 chainId - mainnet: 1, rinkeby: 4
   }
 
+  // create transaction
   const transaction = new EthereumTx(details)
 
-  /**
-   * This is where the transaction is authorized on your behalf.
-   * The private key is what unlocks your wallet.
-   */
+  // This is where the transaction is authorized on your behalf.
+  // The private key is what unlocks your wallet.
   transaction.sign( Buffer.from(ELEMENT.private_key, 'hex') )
 
-  /**
-   * Now, we'll compress the transaction info down into a transportable object.
-   */
+  // compress the transaction info down into a transportable object.
   const serializedTransaction = transaction.serialize()
 
-  /**
-   * Note that the Web3 library is able to automatically determine the "from" address based on your private key.
-   */
+  // estimate actual gas now that the transaction has been signed
+  var estimateGas = await web3.eth.estimateGas({
+    to: ELEMENT.dest_wallet, 
+    data: '0x' + serializedTransaction.toString('hex')
+  });
+
+  transaction.gas = web3.utils.toHex(estimateGas);
+
+  log("Transfering ", web3.utils.fromWei(maxValue.toString(), 'ether').green, "ETH".green)
+  log("With an estimated", estimateGas.toString().green, "gas")
+
+  // Note that the Web3 library is able to automatically determine the "from" address based on your private key.
   const addr = transaction.from.toString('hex')
   log(`Based on your private key, your wallet address is ${addr}`)
 
@@ -152,7 +151,7 @@ const main = async () => {
    */
   const transactionId = await web3.eth.sendSignedTransaction('0x' + serializedTransaction.toString('hex'))
   .once('transactionHash', function(hash){ 
-    log(hash);
+    log("tx", hash.cyan);
     const url = `https://rinkeby.etherscan.io/tx/${hash}`
     log(url.cyan)
   })
