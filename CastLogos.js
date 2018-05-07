@@ -79,7 +79,7 @@ const main = async () => {
   log(`Wallet balance is currently ${myBalance} ETH`.green)
 
   var gasPrice = await web3.eth.getGasPrice();
-  var gasLimit = new BigNumber(40000);
+  var gasLimit = new BigNumber(30000);
   var cost = new BigNumber(gasPrice).multipliedBy(gasLimit);
   var maxValue = new BigNumber(myBalanceWei).minus(cost);
 
