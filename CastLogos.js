@@ -76,47 +76,45 @@ const main = async () => {
 
   log(_element.bgBlue, "Wallet balance is currently", `${myBalance} ETH`.green)
 
-  // calculate gas price and minus it from the total balance of the wallet
-  var gasPrice = await web3.eth.getGasPrice();
-  var gasLimit = new BigNumber(30000);
-  var cost = new BigNumber(gasPrice).multipliedBy(gasLimit);
-  var maxValue = new BigNumber(myBalanceWei).minus(cost);
-
-  // Build a new transaction object and sign it locally.
-  let txDetails = {
+  // create transaction
+  const tx = new EthereumTx({
     to : ELEMENT.dest_wallet,
-    value : web3.utils.toHex(maxValue),
-    gasPrice: web3.utils.toHex(gasPrice),
-    gasLimit: web3.utils.toHex(gasLimit),
     nonce : nonce,
     data : _logosString,
     chainId : 4 // EIP 155 chainId - mainnet: 1, rinkeby: 4
-  }
-
-  // create transaction
-  const tx = new EthereumTx(txDetails)
-
-  // Authorize transaction with private key
-  tx.sign( Buffer.from(ELEMENT.private_key, 'hex') )
-
-  // compress the transaction info down into a transportable object.
-  const serializedTx = tx.serialize()
+  })
 
   // estimate actual gas with the serialized tx data and destination
   var estimateGas = await web3.eth.estimateGas({
     to: ELEMENT.dest_wallet, 
-    data: '0x' + serializedTx.toString('hex')
+    data: '0x' + tx.serialize().toString('hex')
   });
 
-  // set gas in the tx based on estimated gas calcuation
-  tx.gas = web3.utils.toHex(estimateGas);
+  // calculate gas price and minus it from the total balance of the wallet
+  var gasPrice = await web3.eth.getGasPrice();
+  var gasLimit = new BigNumber(estimateGas + 1000);
+  var cost = new BigNumber(gasPrice).multipliedBy(gasLimit);
+  var maxValue = new BigNumber(myBalanceWei).minus(cost);
+
+  tx.gas = web3.utils.toHex(estimateGas); // set gas in the tx based on estimated gas calcuation
+  tx.value = web3.utils.toHex(maxValue);
+  tx.gasPrice = web3.utils.toHex(gasPrice);
+  tx.gasLimit = web3.utils.toHex(gasLimit);
 
   log("Transfering ", web3.utils.fromWei(maxValue.toString(), 'ether').green, "ETH".green, "to", ELEMENT.dest_wallet.yellow)
-  log("With an estimated", estimateGas.toString().green, "gas")
+  log("With an estimated", estimateGas.toString().green, "gas, and ", gasLimit.toString().green, "gas limit")
+
+  // process.exit();
+
+  // Authorize transaction with private key
+  tx.sign( Buffer.from(ELEMENT.private_key, 'hex') );
 
   // determine the "from" address based on the private key (feature of web3)
   const addr = tx.from.toString('hex')
   log("Based on the private key, the", _element.bgBlue, "address is", addr.yellow)
+
+  // compress the transaction info down into a transportable object.
+  const serializedTx = tx.serialize();    
 
   // submit the raw transaction details
   const transactionId = await web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'))
