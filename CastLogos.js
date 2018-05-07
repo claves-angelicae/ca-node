@@ -83,7 +83,7 @@ const main = async () => {
   var maxValue = new BigNumber(myBalanceWei).minus(cost);
 
   // Build a new transaction object and sign it locally.
-  let details = {
+  let txDetails = {
     to : ELEMENT.dest_wallet,
     value : web3.utils.toHex(maxValue),
     gasPrice: web3.utils.toHex(gasPrice),
@@ -94,35 +94,35 @@ const main = async () => {
   }
 
   // create transaction
-  const transaction = new EthereumTx(details)
+  const tx = new EthereumTx(txDetails)
 
   // Authorize transaction with private key
-  transaction.sign( Buffer.from(ELEMENT.private_key, 'hex') )
+  tx.sign( Buffer.from(ELEMENT.private_key, 'hex') )
 
   // compress the transaction info down into a transportable object.
-  const serializedTransaction = transaction.serialize()
+  const serializedTx = tx.serialize()
 
-  // estimate actual gas now that the transaction has been signed
+  // estimate actual gas with the serialized tx data and destination
   var estimateGas = await web3.eth.estimateGas({
     to: ELEMENT.dest_wallet, 
-    data: '0x' + serializedTransaction.toString('hex')
+    data: '0x' + serializedTx.toString('hex')
   });
 
-  // set gas based on estimated gas calcuation
-  transaction.gas = web3.utils.toHex(estimateGas);
+  // set gas in the tx based on estimated gas calcuation
+  tx.gas = web3.utils.toHex(estimateGas);
 
   log("Transfering ", web3.utils.fromWei(maxValue.toString(), 'ether').green, "ETH".green, "to", ELEMENT.dest_wallet.yellow)
   log("With an estimated", estimateGas.toString().green, "gas")
 
-  // Note that Web3 can determine the "from" address based on the private key.
-  const addr = transaction.from.toString('hex')
+  // determine the "from" address based on the private key (feature of web3)
+  const addr = tx.from.toString('hex')
   log("Based on the private key, the", _element.bgBlue, "address is", addr.yellow)
 
-  // Submit the raw transaction details to the provider configured above.
-  const transactionId = await web3.eth.sendSignedTransaction('0x' + serializedTransaction.toString('hex'))
+  // submit the raw transaction details
+  const transactionId = await web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'))
   .once('transactionHash', function(hash){ 
     log("tx", hash.cyan);
-    // We now know the transaction ID. Build the public Etherscan url
+    // Build the public Etherscan url with the tx hash
     const url = `https://rinkeby.etherscan.io/tx/${hash}`
     log(url.cyan)
   })

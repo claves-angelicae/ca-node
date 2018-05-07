@@ -36,4 +36,8 @@ The compiled .abi and .bin files are generated in `./build/`.
   - https://github.com/TokenMarketNet/ethereum-smart-contract-transaction-demo/tree/master/src
   - https://tokenmarket.net/blog/creating-ethereum-smart-contract-transactions-in-client-side-javascript/
   - https://www.ethereum.org/greeter
-
+  - https://github.com/ethereumjs/ethereumjs-tx/blob/master/examples/transactions.js#L15
+  - https://gist.github.com/tomconte/6ce22128b15ba36bb3d7585d5180fba0
+  - https://medium.com/@ethgasstation/ethereum-wallets-and-the-problem-of-the-default-gas-price-fe7e55743cb5
+  - https://davekiss.com/ethereum-web3-node-tutorial/
+  - https://web3js.readthedocs.io/en/1.0/web3-eth.html?highlight=gasPrice#getgasprice
