@@ -4,8 +4,7 @@ if (!process.argv[3] || (
   process.argv[2] !== "air" &&
   process.argv[2] !== "fire" &&
   process.argv[2] !== "water" &&
-  process.argv[2] !== "earth"
-  )) {
+  process.argv[2] !== "earth" )) {
   console.log("Usage: ./CastLogos.js <air|fire|water|earth> <logos_string>");
   process.exit();
 }
