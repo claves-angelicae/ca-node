@@ -13,9 +13,7 @@ if (!process.argv[3] || (
 const _element = process.argv[2];
 const _logosString = process.argv[3];
 
-/**
- * Require the credentials in .env file
- */
+// Require the credentials in .env file
 require('dotenv').config()
 const config = require('./config').config;
 const Web3 = require('web3')
@@ -59,30 +57,6 @@ const getElementKeys = function(elementName) {
 
 const ELEMENT = getElementKeys(_element);
 
-/**
- * Fetch the current transaction gas prices from https://ethgasstation.info/
- * 
- * @return {object} Gas prices at different priorities
- */
-const getCurrentGasPrices = async () => {
-  let response = await axios.get('https://ethgasstation.info/json/ethgasAPI.json')
-  let prices = {
-    low: response.data.safeLow / 10,
-    medium: response.data.average / 10,
-    high: response.data.fast / 10
-  }
-
-  console.log("")
-  log (`Current ETH Gas Prices (in GWEI):`.cyan)
-  console.log("")
-  log(`Low: ${prices.low} (transaction completes in < 30 minutes)`.green)
-  log(`Standard: ${prices.medium} (transaction completes in < 5 minutes)`.yellow)
-  log(`Fast: ${prices.high} (transaction completes in < 2 minutes)`.red)
-  console.log("")
-
-  return prices
-}
-
 // Change the provider that is passed to HttpProvider to `mainnet` for live transactions. 
 const web3 = new Web3( new Web3.providers.HttpProvider(config.ethNode) )
 
@@ -124,8 +98,7 @@ const main = async () => {
   // create transaction
   const transaction = new EthereumTx(details)
 
-  // This is where the transaction is authorized on your behalf.
-  // The private key is what unlocks your wallet.
+  // Authorize transaction with private key
   transaction.sign( Buffer.from(ELEMENT.private_key, 'hex') )
 
   // compress the transaction info down into a transportable object.
@@ -137,6 +110,7 @@ const main = async () => {
     data: '0x' + serializedTransaction.toString('hex')
   });
 
+  // set gas based on estimated gas calcuation
   transaction.gas = web3.utils.toHex(estimateGas);
 
   log("Transfering ", web3.utils.fromWei(maxValue.toString(), 'ether').green, "ETH".green)
@@ -146,9 +120,7 @@ const main = async () => {
   const addr = transaction.from.toString('hex')
   log(`Based on your private key, your wallet address is ${addr}`)
 
-  /**
-   * We're ready! Submit the raw transaction details to the provider configured above.
-   */
+  // Submit the raw transaction details to the provider configured above.
   const transactionId = await web3.eth.sendSignedTransaction('0x' + serializedTransaction.toString('hex'))
   .once('transactionHash', function(hash){ 
     log("tx", hash.cyan);
@@ -169,11 +141,8 @@ const main = async () => {
     log(receipt);
   });
 
-  /**
-   * We now know the transaction ID, so let's build the public Etherscan url where
-   * the transaction details can be viewed.
-   */
 
+  // We now know the transaction ID. Build the public Etherscan url
   log(`Note: please allow for 30 seconds before transaction appears on Etherscan`.magenta)
 
   process.exit()
