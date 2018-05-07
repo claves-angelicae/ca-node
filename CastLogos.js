@@ -66,14 +66,13 @@ web3.eth.defaultAccount = ELEMENT.wallet;
 const main = async () => {
 
   // With every new transaction sent using a specific wallet address,
-  // you must increase the nonce that's tied to the sender wallet.
+  // increase the nonce that's tied to the sender wallet.
   let nonce = await web3.eth.getTransactionCount(web3.eth.defaultAccount)
   log(`The outgoing transaction count for your wallet address is: ${nonce}`.magenta)
 
   // get wallet balance before sending
   let myBalanceWei = await web3.eth.getBalance(web3.eth.defaultAccount)
   let myBalance = web3.utils.fromWei(myBalanceWei, 'ether')
-
   log(_element.bgBlue, "Wallet balance is currently", `${myBalance} ETH`.green)
 
   // create transaction
@@ -103,8 +102,6 @@ const main = async () => {
 
   log("Transfering ", web3.utils.fromWei(maxValue.toString(), 'ether').green, "ETH".green, "to", ELEMENT.dest_wallet.yellow)
   log("With an estimated", estimateGas.toString().green, "gas, and ", gasLimit.toString().green, "gas limit")
-
-  // process.exit();
 
   // Authorize transaction with private key
   tx.sign( Buffer.from(ELEMENT.private_key, 'hex') );
