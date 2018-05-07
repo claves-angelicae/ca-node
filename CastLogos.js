@@ -123,6 +123,7 @@ const main = async () => {
   const transactionId = await web3.eth.sendSignedTransaction('0x' + serializedTransaction.toString('hex'))
   .once('transactionHash', function(hash){ 
     log("tx", hash.cyan);
+    // We now know the transaction ID. Build the public Etherscan url
     const url = `https://rinkeby.etherscan.io/tx/${hash}`
     log(url.cyan)
   })
@@ -141,7 +142,6 @@ const main = async () => {
   });
 
 
-  // We now know the transaction ID. Build the public Etherscan url
   log(`Note: please allow for 30 seconds before transaction appears on Etherscan`.magenta)
 
   process.exit()
