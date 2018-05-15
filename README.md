@@ -1,14 +1,70 @@
 # ca-node
 
 Claves Angelicae Ethereum contract deployment and interaction server. This software
-does the following:
+contains a number of scripts that do the following:
 
   - Compiles Contracts
   - Deploys Contracts
   - Interacts with Contracts
-  - Casts values to contracts from CA Installation
+  - Posts values to contracts from CA Installation
+  - Performs transactions
+  - Calculates gas expendatures
+  - Get current gas prices on the Ethereum network
 
-## Compile Contract
+## Set up .env file
+
+The .env file must be placed in the root of the project and configured as such:
+
+    INFURA_ACCESS_TOKEN=<infura api toke>
+
+    # clavesangelicae main wallet
+    WALLET_ADDRESS=<0x...address>
+    WALLET_PRIVATE_KEY=<0x...address>
+
+    # clavesangelicae element wallets
+    AIR_WALLET_ADDRESS=<0x...address>
+    AIR_PRIVATE_KEY=<0x...address>
+    AIR_DEST_WALLET_ADDRESS=<0x...address>
+
+    FIRE_WALLET_ADDRESS=<0x...address>
+    FIRE_PRIVATE_KEY=<0x...address>
+    FIRE_DEST_WALLET_ADDRESS=<0x...address>
+
+    WATER_WALLET_ADDRESS=<0x...address>
+    WATER_PRIVATE_KEY=<0x...address>
+    WATER_DEST_WALLET_ADDRESS=<0x...address>
+
+    EARTH_WALLET_ADDRESS=<0x...address>
+    EARTH_PRIVATE_KEY=<0x...address>
+    EARTH_DEST_WALLET_ADDRESS=<0x...address>
+
+## Set up Config.js
+
+Set the ethNode you want to use. Either a localhost node such as an Ethereum full/lite node, geth, ganache, or the etherscan testnets, or mainnet
+
+    module.exports = {
+      config: {
+          // ethNode : 'http://localhost:8545' // local
+          // ethNode : `https://rinkeby.infura.io/${process.env.INFURA_ACCESS_TOKEN}`, chainId : 4 // testnet
+          ethNode : `https://mainnet.infura.io/${process.env.INFURA_ACCESS_TOKEN}`, chainId : 1 // mainnet
+      }
+    };  
+
+## Cast Logos with Ether transaction
+
+node: There must be enough Ether in the source account to cover the transaction costs for this transaction to succeed.
+
+    ./CastLogos.js <air|fire|water|earth> <logos_string>
+
+## Get current gas prices on the network
+
+    ./GetGasPrices.js
+
+## Get account balance
+
+    Usage: ./GetAcctBalance.js <0x....address>
+
+## Compiling Contracts
 
 Contracts are located in `./contracts`. To compile a contract, run
 
@@ -16,11 +72,11 @@ Contracts are located in `./contracts`. To compile a contract, run
 
 The compiled .abi and .bin files are generated in `./build/`.
 
-## Deploy Contract
+## Deploying Contracts
 
     ./contracts/deploy.js <contract owner address> <contract.bin> <contract.abi>
 
-## Cast LOGOS to contract
+## Castings LOGOS to contracts
 
     ./CastToContract.js <sender address> <contract address> <contract.abi> "logos string"
 
