@@ -11,6 +11,10 @@ contains a number of scripts that do the following:
   - Calculates gas expendatures
   - Get current gas prices on the Ethereum network
 
+## Requirements
+
+Tested with node v9.11.1
+
 ## Set up .env file
 
 The .env file must be placed in the root of the project and configured as such:
