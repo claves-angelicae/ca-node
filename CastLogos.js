@@ -80,7 +80,7 @@ const main = async () => {
     to : ELEMENT.dest_wallet,
     nonce : nonce,
     data : _logosString,
-    chainId : 4 // EIP 155 chainId - mainnet: 1, rinkeby: 4
+    chainId : config.chainId // EIP 155 chainId - mainnet: 1, rinkeby: 4
   })
 
   // estimate actual gas with the serialized tx data and destination
@@ -137,7 +137,9 @@ const main = async () => {
 
   log(`Note: please allow for 30 seconds before transaction appears on Etherscan`.magenta)
 
-  process.exit()
+  log("All done. Ctrl-c to exit.")
+  process.stdin.resume();
+  //process.exit()
 }
 
 main()
