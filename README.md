@@ -44,7 +44,7 @@ The .env file must be placed in the root of the project and configured as such:
 
 ## Set up Config.js
 
-Set the ethNode you want to use. Either a localhost node such as an Ethereum full/lite node, geth, ganache, or the etherscan testnets, or mainnet
+Set the ethNode you want to use. Either a localhost node such as an Ethereum full/lite node, geth, ganache, testnets, or mainnet.
 
     module.exports = {
       config: {
@@ -66,7 +66,7 @@ node: There must be enough Ether in the source account to cover the transaction 
 
 ## Get account balance
 
-    Usage: ./GetAcctBalance.js <0x....address>
+    ./GetAcctBalance.js <0x....address>
 
 ## Compiling Contracts
 
